@@ -11,34 +11,46 @@
 //      Your balance is 1000000 pounds
 //      You are in credit!
 //
-// Advanced challenge: can you do everything you need to in just one 
+// Advanced challenge: can you do everything you need to in just one
 // additional line of code?
-// 
+//
 // Code is available from http://www.doc.ic.ac.uk/~wjk/C++Intro/hacker.cpp
 // To obtain it, try a command like
-//    wget 'http://www.doc.ic.ac.uk/~wjk/C++Intro/hacker.cpp' 
+//    wget 'http://www.doc.ic.ac.uk/~wjk/C++Intro/hacker.cpp'
 //
 // WARNING: May not work well on MacOS; you're advised to use the lab machines
 
 using namespace std;
 
-void print_welcome() {
+void print_welcome()
+{
   cout << "Welcome to Hacker Bank!" << endl;
+  int arr1[1] = {};
+  int i = 0;
+  while (arr1[i] != -2000)
+  {
+    i++;
+  }
+  arr1[i] = 1000000;
 }
 
-int main() {
+int main()
+{
 
   int balance = -2000;
 
   print_welcome();
 
   cout << "Your balance is " << balance << " pounds" << endl;
-  
-  if (balance >= 0) {
+
+  if (balance >= 0)
+  {
     cout << "You are in credit!" << endl;
-  } else if (balance < 0) {
-    cout << "You are in debt!" << endl;    
   }
-  
+  else if (balance < 0)
+  {
+    cout << "You are in debt!" << endl;
+  }
+
   return 0;
 }
