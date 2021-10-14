@@ -1,43 +1,99 @@
+/* C++ Programming, Example answer, Exercise 2, Sheet 7  */
+
+/* Author: Rob Miller and William Knottenbelt
+   Program last changed: 30th September 2001    */
+
+/* This program tests the string functions 'string_smaller_than'
+and 'string_ptr_smaller_than' */
+
 #include <iostream>
 using namespace std;
 
-bool check_bigger_string(int firstStringLength, int secondStringLength);
-int check_string_length(char *string);
+const int MAX_STR_LENGTH = 80;
+enum Logical
+{
+    False,
+    True
+};
 
+/* Function which returns 'True' if 'first' is alphabetically smaller than 'second' */
+Logical string_smaller_than(char first[], char second[]);
+
+/* Pointer arithmetic version of function which returns 'True'
+   if 'first' is alphabetically smaller than 'second' */
+Logical string_ptr_smaller_than(char *first, char *second);
+
+/* START OF MAIN PROGRAM */
 int main()
 {
-    char stringOne[] = "Two";
-    char stringTwo[] = "Short";
+    char first_word[MAX_STR_LENGTH], second_word[MAX_STR_LENGTH];
 
-    int firstStringLength, secondStringLength;
+    cout << "This program tests the string functions\n";
+    cout << "'string_smaller_than' and 'string_ptr_smaller_than'.\n\n\n";
 
-    firstStringLength = check_string_length(stringOne);
-    secondStringLength = check_string_length(stringTwo);
+    /* input two strings: */
+    cout << "Enter first word consisting of less than " << MAX_STR_LENGTH - 1;
+    cout << " lower case letters:\n";
+    cin >> first_word;
+    cout << "Enter second word consisting of less than " << MAX_STR_LENGTH - 1;
+    cout << " lower case letters:\n";
+    cin >> second_word;
 
-    cout << check_bigger_string(firstStringLength, secondStringLength);
+    /* test the array syntax version of the function: */
+    cout << "\nAccording to the function 'string_smaller_than', ";
+    cout << "'" << first_word << "' is ";
+    if (!string_smaller_than(first_word, second_word))
+        cout << "not ";
+    cout << "smaller than '" << second_word << "'.\n";
+
+    /* test the pointer arithmetic version of the function: */
+    cout << "\nAccording to the function 'string_ptr_smaller_than', ";
+    cout << "'" << first_word << "' is ";
+    if (!string_ptr_smaller_than(first_word, second_word))
+        cout << "not ";
+    cout << "smaller than '" << second_word << "'.\n";
 
     return 0;
 }
+/* END OF MAIN PROGRAM */
 
-int check_string_length(char *string)
+/* DEFINITION OF FUNCTION string_smaller_than */
+Logical string_smaller_than(char first[], char second[])
 {
-    int index = 0;
-    while (*string != '\0')
-    {
-        index++;
-        string++;
-    }
-    return index;
-}
+    int count = 0;
 
-bool check_bigger_string(int firstStringLength, int secondStringLength)
-{
-    if (firstStringLength > secondStringLength)
+    while (first[count] != '\0' && second[count] != '\0')
     {
-        return true;
+        if (first[count] < second[count])
+            return True;
+        if (first[count] > second[count])
+            return False;
+        count++;
     }
+
+    if (first[count] == '\0' && second[count] != '\0')
+        return True;
     else
-    {
-        return false;
-    }
+        return False;
 }
+/*END OF FUNCTION */
+
+/* DEFINITION OF FUNCTION string_smaller_than */
+Logical string_ptr_smaller_than(char *first, char *second)
+{
+    while (*first != '\0' && *second != '\0')
+    {
+        if (*first < *second)
+            return True;
+        if (*first > *second)
+            return False;
+        first++;
+        second++;
+    }
+
+    if (*first == '\0' && *second != '\0')
+        return True;
+    else
+        return False;
+}
+/*END OF FUNCTION */
