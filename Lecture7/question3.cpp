@@ -1,9 +1,10 @@
-/* Program 7.5.1 from C++ Programming Lecture notes  */
+/* C++ Programming, Example answer, Exercise 3, Sheet 7  */
 
 /* Author: Rob Miller and William Knottenbelt
-   Program last changed: 28th September 2013    */
+   Program last changed: 5th November 2001    */
 
-/* This program creates and prints out a linked list of strings. */
+/* This program creates and prints out a linked list of strings,
+and tests the functions 'add_after' and 'delete_node'. */
 
 #include <iostream>
 #include <cstdlib>
@@ -11,21 +12,24 @@
 using namespace std;
 
 const int MAX_WORD_LENGTH = 80;
-
-/* definition of a node */
-struct Node;
-typedef Node *Node_ptr;
 enum Logical
 {
     False,
     True
 };
 
+/* definition of a node */
+struct Node;
+typedef Node *Node_ptr;
+
 struct Node
 {
     char word[MAX_WORD_LENGTH];
     Node_ptr ptr_to_next_node;
 };
+
+/* Function which returns 'True' if 'first' is alphabetically smaller than 'second' */
+Logical string_smaller_than(char first[], char second[]);
 
 /* Function to assign a linked list to "a_node" */
 void assign_list(Node_ptr &a_list);
@@ -36,17 +40,15 @@ void assign_new_node(Node_ptr &a_node);
 /* Function to print the strings in the list "a_node" */
 void print_list(Node_ptr a_node);
 
-/* Function to insert a node containing "word_after" in the linked list "list", after the first occurrence of a node containing "a_word". If "list" does not contain such a node, the function leaves it unchanged. */
-void add_after(Node_ptr &list, char a_word[], char word_after[]);
+/* Function to insert a node containing "word_after" after the first node
+   containing "a_word" in "a_list". */
+void add_after(Node_ptr &a_list, char a_word[], char word_after[]);
 
-/* Function which deletes the first node in "a_list" which contains "a_word" */
-void delete_node(Node_ptr &list, char a_word[]);
+/* Function to delete the first node in "a_list" containing "a_word". */
+void delete_node(Node_ptr &a_list, char a_word[]);
 
 /* Function to sort "a_list" alphabetically. */
 void string_selection_sort(Node_ptr &a_list);
-
-/* Function which returns 'True' if 'first' is alphabetically smaller than 'second' */
-Logical string_smaller_than(char first[], char second[]);
 
 /* Function to set 'smallest_node_ptr' to the alphabetically
    smallest node afer 'current_node_ptr' */
@@ -60,29 +62,56 @@ int main()
 {
     Node_ptr my_list = NULL;
     char a_word[MAX_WORD_LENGTH];
-    char word_after[MAX_WORD_LENGTH];
+    char new_word[MAX_WORD_LENGTH];
+
     assign_list(my_list);
 
     cout << "\nTHE LIST IS NOW:\n";
     print_list(my_list);
 
-    // Add a new word
-    cout << "AFTER WHICH WORD WOULD YOU LIKE TO ADD AN EXTRA WORD?" << endl;
-    cin >> word_after;
-    cout << "WHICH WORD WOULD YOU LIKE TO ADD?" << endl;
+    cout << "\n\nAFTER WHICH WORD WOULD YOU LIKE TO ADD AN EXTRA WORD? ";
     cin >> a_word;
-    add_after(my_list, a_word, word_after);
+    cout << "WHICH WORD WOULD YOU LIKE TO ADD? ";
+    cin >> new_word;
+    add_after(my_list, a_word, new_word);
+    cout << "\nTHE LIST IS NOW:\n";
+    print_list(my_list);
 
     cout << "\n\nWHICH WORD WOULD YOU LIKE TO DELETE? ";
     cin >> a_word;
     delete_node(my_list, a_word);
-
     cout << "\nTHE LIST IS NOW:\n";
     print_list(my_list);
+
+    string_selection_sort(my_list);
+    cout << "\n\nAFTER SORTING, THE LIST IS:\n";
+    print_list(my_list);
+    cout << "\n";
 
     return 0;
 }
 /* END OF MAIN PROGRAM */
+
+/* DEFINITION OF FUNCTION string_smaller_than */
+Logical string_smaller_than(char first[], char second[])
+{
+    int count = 0;
+
+    while (first[count] != '\0' && second[count] != '\0')
+    {
+        if (first[count] < second[count])
+            return True;
+        if (first[count] > second[count])
+            return False;
+        count++;
+    }
+
+    if (first[count] == '\0' && second[count] != '\0')
+        return True;
+    else
+        return False;
+}
+/*END OF FUNCTION */
 
 /* DEFINITION OF FUNCTION "assign_list" */
 void assign_list(Node_ptr &a_list)
@@ -118,7 +147,7 @@ void assign_list(Node_ptr &a_list)
 /* DEFINITION OF FUNCTION "assign_new_node" */
 void assign_new_node(Node_ptr &a_node)
 {
-    a_node = new (nothrow) Node;
+    a_node = new Node;
     if (a_node == NULL)
     {
         cout << "sorry - no more memory\n";
@@ -136,18 +165,19 @@ void print_list(Node_ptr a_node)
         a_node = a_node->ptr_to_next_node;
     }
 }
+/* END OF FUNCTION DEFINITION */
 
-void add_after(Node_ptr &list, char a_word[], char word_after[])
+/* DEFINITION OF FUNCTION "add_after" */
+void add_after(Node_ptr &a_list, char a_word[], char word_after[])
 {
+    Node_ptr current_node_ptr = a_list, extra_node_ptr;
 
-    Node_ptr current_node_ptr = list, extra_node_ptr;
-
-    assign_new_node(extra_node_ptr); // What does this step achieve?
+    assign_new_node(extra_node_ptr);
     strcpy(extra_node_ptr->word, word_after);
 
     while (current_node_ptr != NULL)
     {
-        if (!strcmp(word_after, current_node_ptr->word))
+        if (!strcmp(a_word, current_node_ptr->word))
         {
             extra_node_ptr->ptr_to_next_node = current_node_ptr->ptr_to_next_node;
             current_node_ptr->ptr_to_next_node = extra_node_ptr;
@@ -158,26 +188,29 @@ void add_after(Node_ptr &list, char a_word[], char word_after[])
 
     delete extra_node_ptr;
 }
+/* END OF FUNCTION DEFINITION */
 
-void delete_node(Node_ptr &list, char a_word[])
+/* DEFINITION OF FUNCTION "delete_node" */
+void delete_node(Node_ptr &a_list, char a_word[])
 {
-    Node_ptr current_node_ptr = list, node_to_be_deleted_ptr = list;
+    Node_ptr node_before_ptr = a_list, node_to_be_discarded_ptr = a_list;
 
-    while (node_to_be_deleted_ptr != NULL)
+    while (node_to_be_discarded_ptr != NULL)
     {
-        if (!strcmp(a_word, node_to_be_deleted_ptr->word))
+        if (!strcmp(a_word, node_to_be_discarded_ptr->word))
         {
-            if (node_to_be_deleted_ptr == list)
-                list = node_to_be_deleted_ptr->ptr_to_next_node;
+            if (node_to_be_discarded_ptr == a_list)
+                a_list = node_to_be_discarded_ptr->ptr_to_next_node;
             else
-                current_node_ptr->ptr_to_next_node = node_to_be_deleted_ptr->ptr_to_next_node;
-            delete node_to_be_deleted_ptr;
+                node_before_ptr->ptr_to_next_node = node_to_be_discarded_ptr->ptr_to_next_node;
+            delete node_to_be_discarded_ptr;
             return;
         }
-        current_node_ptr = node_to_be_deleted_ptr;
-        node_to_be_deleted_ptr = node_to_be_deleted_ptr->ptr_to_next_node;
+        node_before_ptr = node_to_be_discarded_ptr;
+        node_to_be_discarded_ptr = node_to_be_discarded_ptr->ptr_to_next_node;
     }
 }
+/* END OF FUNCTION DEFINITION */
 
 /* DEFINITION OF FUNCTION "string_selection_sort" */
 void string_selection_sort(Node_ptr &a_list)
@@ -209,30 +242,13 @@ void set_to_smallest_after(Node_ptr current_node_ptr, Node_ptr &smallest_node_pt
     }
 }
 /* END OF FUNCTION DEFINITION */
-/* DEFINITION OF FUNCTION string_smaller_than */
-Logical string_smaller_than(char first[], char second[])
-{
-    int count = 0;
 
-    while (first[count] != '\0' && second[count] != '\0')
-    {
-        if (first[count] < second[count])
-            return True;
-        if (first[count] > second[count])
-            return False;
-        count++;
-    }
-
-    if (first[count] == '\0' && second[count] != '\0')
-        return True;
-    else
-        return False;
-}
 /* DEFINITION OF FUNCTION "swap" */
 void swap(char first[], char second[])
 {
     char temp[MAX_WORD_LENGTH];
     strcpy(temp, first);
     strcpy(first, second);
-
-    /* END OF FUNCTION DEFINITION */
+    strcpy(second, temp);
+}
+/* END OF FUNCTION DEFINITION */
