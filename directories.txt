@@ -6,3 +6,6 @@ scp file.txt jac21@shell1.doc.ic.ac.uk:/homes/jac21/Programming
 
 ** Copy a Remote File to a Local System using the scp Command ** 
 scp jac21@shell1.doc.ic.ac.uk:/homes/jac21/Programming/<FILE_NAME> /local/directory
+
+** Connect to a lab machine automatically once on the shell **
+/vol/linux/bin/sshtolab
