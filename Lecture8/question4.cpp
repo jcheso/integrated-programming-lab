@@ -5,8 +5,30 @@ int binary_search(int value, int list[], int first, int last)
 {
     cout << "Value to search for: " << value << endl;
     cout << "List to search: " << list << endl;
-    cout << "First list value: " << first << endl;
-    cout << "Last list value: " << last << endl;
+    cout << "First list value: " << list[first] << " at index " << first << endl;
+    cout << "Last list value: " << list[last] << " at index " << last << endl;
+
+    int middle = (last - first) / 2 + (first);
+    cout << "Middle list value: " << list[middle] << " at index " << middle << endl;
+    cout << "--------------------------------------------------------------------" << endl;
+    if (middle > last)
+    {
+        cout << "Didn't find " << value << endl;
+        return false;
+    }
+    else if (list[middle] == value)
+    {
+        cout << "Found " << value << endl;
+        return true;
+    }
+    else if (list[middle] < value)
+    {
+        binary_search(value, list, middle + 1, last);
+    }
+    else if (list[middle] > value)
+    {
+        binary_search(value, list, first, middle - 1);
+    }
 }
 
 int main()
